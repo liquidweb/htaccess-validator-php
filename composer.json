@@ -19,6 +19,8 @@
         "liquidweb/htaccess-validator-shell": "dev-develop"
     },
     "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
+        "phpcompatibility/php-compatibility": "^9.3",
         "symfony/phpunit-bridge": "^5.2"
     },
     "autoload": {
@@ -36,9 +38,17 @@
         "sort-packages": true
     },
     "scripts": {
+        "test": "@test:all",
+        "test:all": [
+            "@test:unit",
+            "@test:standards"
+        ],
+        "test:standards": "phpcs",
         "test:unit": "simple-phpunit --testdox --color=always"
     },
     "scripts-descriptions": {
+        "test:all": "Run all automated tests.",
+        "test:standards": "Check coding standards.",
         "test:unit": "Run the PHPUnit test suite."
     }
 }
