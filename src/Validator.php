@@ -146,11 +146,12 @@ class Validator
             throw new ValidationException('Unable to run validation script.');
         }
 
+        $errors   = stream_get_contents($pipes[2]);
         $exitCode = proc_close($process);
 
         return (object) [
             'exitCode' => $exitCode,
-            'errors'   => $pipes[2],
+            'errors'   => $errors,
         ];
     }
 }
