@@ -2,3 +2,7 @@
 composer.lock
 tests/tmp
 vendor
+
+# System files
+.DS_Store
+Thumbs.db
