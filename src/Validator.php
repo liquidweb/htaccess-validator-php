@@ -107,14 +107,25 @@ class Validator
      *    @type int    $exitCode The script's exit code.
      *    @type string $errors   The contents of STDERR.
      * }
-     *
-     * @todo Support non-standard vendor directory locations.
      */
     protected function runValidator()
     {
-        $script = dirname(__DIR__) . '/vendor/bin/validate-htaccess';
+        // Locate the validate-htaccess shell script.
+        $script = '';
+        $paths  = [
+            getenv('HTACCESS_VALIDATOR_SCRIPT'),
+            dirname(__DIR__) . '/vendor/bin/validate-htaccess',
+            dirname(dirname(dirname(__DIR__))) . '/bin/validate-htaccess',
+        ];
 
-        if (! file_exists($script)) {
+        foreach ($paths as $path) {
+            if ($path && file_exists($path)) {
+                $script = $path;
+                break;
+            }
+        }
+
+        if (! $script) {
             throw new \RuntimeException(
                 sprintf('Cannot find validation script at %s, have you installed Composer dependencies?', $script),
                 E_COMPILE_ERROR
