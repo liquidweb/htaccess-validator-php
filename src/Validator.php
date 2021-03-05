@@ -6,61 +6,61 @@ use LiquidWeb\HtaccessValidator\Exceptions\ValidationException;
 
 class Validator
 {
-	/**
-	 * @var string|Resource The file being validated.
-	 */
-	protected $file;
+    /**
+     * @var string|Resource The file being validated.
+     */
+    protected $file;
 
-	/**
-	 * Construct a new instance of the class.
-	 *
-	 * @param string|resource $file The file being validated. This may be an actual file or a
+    /**
+     * Construct a new instance of the class.
+     *
+     * @param string|resource $file The file being validated. This may be an actual file or a
      *                              stream resource.
-	 */
-	public function __construct($file)
-	{
-		$this->file = $file;
-	}
+     */
+    public function __construct($file)
+    {
+        $this->file = $file;
+    }
 
-	/**
-	 * Retrieve the underlying filepath.
-	 *
-	 * @return string The path to $this->file.
-	 */
-	public function getFilePath()
-	{
-		return is_resource($this->file)
+    /**
+     * Retrieve the underlying filepath.
+     *
+     * @return string The path to $this->file.
+     */
+    public function getFilePath()
+    {
+        return is_resource($this->file)
             ? stream_get_meta_data($this->file)['uri']
             : (string) $this->file;
-	}
+    }
 
-	/**
-	 * Simply return whether or not the given file's syntax is valid.
-	 *
-	 * @return bool True if validation passes, false if an error is encountered.
-	 */
-	public function isValid()
-	{
-		try {
-			$this->validate();
-		} catch (ValidationException $e) {
-			return false;
-		}
+    /**
+     * Simply return whether or not the given file's syntax is valid.
+     *
+     * @return bool True if validation passes, false if an error is encountered.
+     */
+    public function isValid()
+    {
+        try {
+            $this->validate();
+        } catch (ValidationException $e) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Validate the given file.
-	 *
-	 * Validation is handled by the underlying Apache instance, using a stripped-down configuration
-	 * so the entire Apache configuration consists of a) the necessary bootstrapping and b) the
-	 * contents of $this->file.
-	 *
-	 * @throws ValidationException
-	 */
-	public function validate()
-	{
+    /**
+     * Validate the given file.
+     *
+     * Validation is handled by the underlying Apache instance, using a stripped-down configuration
+     * so the entire Apache configuration consists of a) the necessary bootstrapping and b) the
+     * contents of $this->file.
+     *
+     * @throws ValidationException
+     */
+    public function validate()
+    {
         try {
             $result = $this->runValidator();
         } catch (\Exception $e) {
@@ -71,7 +71,7 @@ class Validator
             );
         }
 
-		if (0 !== $result->exitCode) {
+        if (0 !== $result->exitCode) {
             throw new ValidationException(
                 sprintf('Validation errors were encountered: %s', $result->errors),
                 $result->exitCode
@@ -79,22 +79,22 @@ class Validator
         }
 
         return true;
-	}
+    }
 
-	/**
-	 * Create a new validator instance using a temporary file.
-	 *
+    /**
+     * Create a new validator instance using a temporary file.
+     *
      * @param string $contents The file contents.
      *
-	 * @return self
-	 */
-	public static function createFromString($contents)
-	{
-		$fh = tmpfile();
+     * @return self
+     */
+    public static function createFromString($contents)
+    {
+        $fh = tmpfile();
         fwrite($fh, $contents);
 
-		return new static($fh);
-	}
+        return new static($fh);
+    }
 
     /**
      * Call the underlying validate-htaccess script.
