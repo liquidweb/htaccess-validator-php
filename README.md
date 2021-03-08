@@ -40,15 +40,15 @@ There are two ways to instantiate the class:
 1. Passing the full system path of the file under validation to the class constructor:
 
 	```php
-    use LiquidWeb\HtaccessValidator\Validator;
+	use LiquidWeb\HtaccessValidator\Validator;
 
 	$validator = new Validator($file);
 	```
 
 2. Passing the configuration directly to the `::createFromString()` factory method:
 
-    ```php
-    use LiquidWeb\HtaccessValidator\Validator;
+	```php
+	use LiquidWeb\HtaccessValidator\Validator;
 
 	$validator = Validator::createFromString('Options +FollowSymLinks');
 	```
@@ -61,4 +61,18 @@ $validator->validate();
 
 # Return a boolean.
 $validator->isValid();
+```
+
+#### Modifying the path to the validator shell script
+
+By default, the library assumes that the `validate-htaccess` shell script lives in `vendor/bin/`.
+
+If you're using a non-standard Composer configuration, you can explicitly specify the path by setting the `HTACCESS_VALIDATOR_SCRIPT` environment variable, either in your environment configuration or inline:
+
+```php
+# Absolute system path to the shell script.
+putenv('HTACCESS_VALIDATOR_SCRIPT=/some/path/to/vendor/bin/htaccess-validator');
+
+# Will now use the Htaccess Validator script specified above.
+$validator = (new Validator($file))->validate();
 ```
